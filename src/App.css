@@ -34,8 +34,6 @@ body {
   overflow-y: auto;
   background: #ffffff;
   border-right: 1px solid #e5e7eb;
-  display: flex;
-  flex-direction: column;
   box-shadow: 2px 0 8px rgba(0, 0, 0, 0.08);
   z-index: 1000;
   flex-shrink: 0;
