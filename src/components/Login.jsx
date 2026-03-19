@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-const PASSWORD = import.meta.env.VITE_APP_PASSWORD || 'pra2025';
+const PASSWORD = import.meta.env.VITE_APP_PASSWORD || 'pra2026';
 
 function Login({ onSuccess }) {
   const [input, setInput] = useState('');
