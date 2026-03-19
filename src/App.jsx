@@ -3,6 +3,7 @@ import SearchSidebar from './components/SearchSidebar';
 import MapDisplay from './components/MapDisplay';
 import Lightbox from './components/Lightbox';
 import SiteDetail from './components/SiteDetail';
+import Login from './components/Login';
 
 const INITIAL_FILTERS = {
   name: '',
@@ -80,6 +81,7 @@ function processFeature(feature, index) {
 }
 
 function App() {
+  const [authed, setAuthed] = useState(() => sessionStorage.getItem('pra_auth') === '1');
   const [allSites, setAllSites] = useState([]);
   const [filters, setFilters] = useState(INITIAL_FILTERS);
   const [layers, setLayers] = useState(INITIAL_LAYERS);
@@ -161,6 +163,10 @@ function App() {
   const siteDetailMatch = currentHash.match(/^#\/site\/(\d+)$/);
   const siteDetailIndex = siteDetailMatch ? parseInt(siteDetailMatch[1], 10) : null;
   const siteForDetail = siteDetailIndex !== null ? allSites[siteDetailIndex] : null;
+
+  if (!authed) {
+    return <Login onSuccess={() => setAuthed(true)} />;
+  }
 
   if (loading) {
     return (
