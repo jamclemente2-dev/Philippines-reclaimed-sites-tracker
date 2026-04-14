@@ -125,11 +125,34 @@ function convertPolygonCoordinates(geometry) {
 
 function MapDisplay({ sites, onPhotoClick, layers }) {
   const [ports, setPorts] = useState([]);
+  const [restoreFeatures, setRestoreFeatures] = useState([]);
   const [basemap, setBasemap] = useState('street'); // 'street' or 'satellite'
 
   // Get layer visibility from sidebar
   const showPolygons = layers?.find(l => l.id === 'polygons')?.visible ?? true;
   const showPorts = layers?.find(l => l.id === 'ports')?.visible ?? false;
+  const showRestore = layers?.find(l => l.id === 'restore')?.visible ?? true;
+
+  // Load Restoration Projects GeoJSON
+  useEffect(() => {
+    const path = `${import.meta.env.BASE_URL}RestoreProjects.geojson`;
+    fetch(path)
+      .then(r => r.ok ? r.json() : null)
+      .then(geojson => {
+        if (!geojson?.features) return;
+        const parsed = geojson.features
+          .filter(f => f.geometry?.type === 'Polygon')
+          .map(f => ({
+            positions: f.geometry.coordinates[0].map(([lon, lat]) => [lat, lon]),
+            project_name: f.properties.project_name,
+            project_number: f.properties.project_number,
+            lot_name: f.properties.lot_name,
+          }));
+        setRestoreFeatures(parsed);
+        console.log(`✅ Loaded ${parsed.length} restoration polygons`);
+      })
+      .catch(err => console.log('⚠️ RestoreProjects not loaded:', err.message));
+  }, []);
 
   // Load ports GeoJSON
   useEffect(() => {
@@ -240,6 +263,40 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
             >
               <Popup maxWidth={300} minWidth={240}>
                 <SitePopup site={site} onPhotoClick={onPhotoClick} />
+              </Popup>
+            </Polygon>
+          ))}
+        </FeatureGroup>
+      )}
+
+      {/* Restoration Projects Layer */}
+      {showRestore && restoreFeatures.length > 0 && (
+        <FeatureGroup>
+          {restoreFeatures.map((f, i) => (
+            <Polygon
+              key={`restore-${i}`}
+              positions={f.positions}
+              pathOptions={{ color: '#16a34a', fillColor: '#22c55e', fillOpacity: 0.25, weight: 2 }}
+            >
+              <Popup maxWidth={280} minWidth={200}>
+                <div className="popup-content">
+                  <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, textTransform: 'uppercase', marginBottom: 4 }}>
+                    Restoration Project
+                  </div>
+                  <h3 style={{ marginBottom: 6 }}>{f.project_name}</h3>
+                  {f.lot_name && (
+                    <div className="info-row">
+                      <span className="label">Lot:</span>
+                      <span className="value">{f.lot_name}</span>
+                    </div>
+                  )}
+                  {f.project_number && (
+                    <div className="info-row">
+                      <span className="label">Case No.:</span>
+                      <span className="value">{f.project_number}</span>
+                    </div>
+                  )}
+                </div>
               </Popup>
             </Polygon>
           ))}

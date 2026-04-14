@@ -15,6 +15,7 @@ const INITIAL_FILTERS = {
 
 const INITIAL_LAYERS = [
   { id: 'polygons', name: 'Reclamation Polygons', visible: true },
+  { id: 'restore', name: 'Restoration Projects', visible: true },
   { id: 'ports', name: 'Ports (OpenStreetMap)', visible: false }
 ];
 
