@@ -90,6 +90,7 @@ function SitePopup({ site, onPhotoClick }) {
       <InfoRow label="Location"   value={site.address || [site.barangay, site.municipality, site.province].filter(Boolean).join(', ')} />
       <InfoRow label="Region"     value={site.region} />
       <InfoRow label="Area"       value={site.area ? `${site.area} ha` : null} />
+      <InfoRow label="Area (PRA)" value={site.area_pra ? `${site.area_pra} ha` : null} />
       <InfoRow label="PRA Status" value={site.pra_status} />
       <InfoRow label="Data by"    value={site.author} />
       <InfoRow label="Notes"      value={site.notes} />

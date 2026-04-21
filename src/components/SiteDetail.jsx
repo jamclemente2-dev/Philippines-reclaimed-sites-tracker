@@ -121,6 +121,7 @@ function SiteDetail({ site }) {
             <h2 className="detail-section-title">Site Information</h2>
             <div className="detail-grid">
               <DetailRow label="Area"               value={site.area ? `${site.area} ha` : null} />
+              <DetailRow label="Area (PRA)"         value={site.area_pra ? `${site.area_pra} ha` : null} />
               <DetailRow label="PRA Status"         value={site.pra_status} />
               <DetailRow label="Developer"          value={site.developer} />
               <DetailRow label="Year Started"       value={site.year_start} />

@@ -67,6 +67,7 @@ function processFeature(feature, index) {
     province: props.province || '',
     region: props.region || '',
     area: props.Area || props.area || props.Has || '',
+    area_pra: props.Area_PRA || '',
     pra_status: props.pra_status || props.pra_status_2 || '',
     registration_date: props.registration_date || '',
     last_payment_date: props.last_payment_date || '',
