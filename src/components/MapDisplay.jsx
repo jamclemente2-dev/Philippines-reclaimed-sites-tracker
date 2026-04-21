@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, Fragment } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polygon, FeatureGroup, CircleMarker, Tooltip } from 'react-leaflet';
 import L from 'leaflet';
 
@@ -37,6 +37,29 @@ function createMarkerIcon(status) {
 
   iconCache[color] = icon;
   return icon;
+}
+
+// Green marker icon for restoration projects (created once)
+const restoreMarkerIcon = L.divIcon({
+  html: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" width="24" height="32">
+      <path fill="#16a34a" stroke="white" stroke-width="1.5"
+        d="M12 1C6.477 1 2 5.477 2 11c0 7.5 10 20 10 20S22 18.5 22 11C22 5.477 17.523 1 12 1z"/>
+      <circle cx="12" cy="11" r="4.5" fill="white" opacity="0.92"/>
+    </svg>`,
+  className: '',
+  iconSize:    [24, 32],
+  iconAnchor:  [12, 32],
+  popupAnchor: [0, -34],
+});
+
+// Calculate centroid from a [lat, lon] positions array
+function calcCentroid(positions) {
+  const n = positions.length;
+  if (n === 0) return null;
+  const lat = positions.reduce((s, p) => s + p[0], 0) / n;
+  const lon = positions.reduce((s, p) => s + p[1], 0) / n;
+  return [lat, lon];
 }
 
 // ── Popup content ─────────────────────────────────────────────────────────────
@@ -273,12 +296,9 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
       {/* Restoration Projects Layer */}
       {showRestore && restoreFeatures.length > 0 && (
         <FeatureGroup>
-          {restoreFeatures.map((f, i) => (
-            <Polygon
-              key={`restore-${i}`}
-              positions={f.positions}
-              pathOptions={{ color: '#16a34a', fillColor: '#22c55e', fillOpacity: 0.25, weight: 2 }}
-            >
+          {restoreFeatures.map((f, i) => {
+            const centroid = calcCentroid(f.positions);
+            const popup = (
               <Popup maxWidth={280} minWidth={200}>
                 <div className="popup-content">
                   <div style={{ fontSize: '11px', color: '#16a34a', fontWeight: 700, textTransform: 'uppercase', marginBottom: 4 }}>
@@ -299,8 +319,26 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
                   )}
                 </div>
               </Popup>
-            </Polygon>
-          ))}
+            );
+            return (
+              <Fragment key={`restore-${i}`}>
+                <Polygon
+                  positions={f.positions}
+                  pathOptions={{ color: '#16a34a', fillColor: '#22c55e', fillOpacity: 0.25, weight: 2 }}
+                >
+                  {popup}
+                </Polygon>
+                {centroid && (
+                  <Marker
+                    position={centroid}
+                    icon={restoreMarkerIcon}
+                  >
+                    {popup}
+                  </Marker>
+                )}
+              </Fragment>
+            );
+          })}
         </FeatureGroup>
       )}
 
