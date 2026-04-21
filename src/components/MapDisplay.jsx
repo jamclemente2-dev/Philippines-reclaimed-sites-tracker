@@ -129,6 +129,7 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
   const [basemap, setBasemap] = useState('street'); // 'street' or 'satellite'
 
   // Get layer visibility from sidebar
+  const showMarkers = layers?.find(l => l.id === 'markers')?.visible ?? true;
   const showPolygons = layers?.find(l => l.id === 'polygons')?.visible ?? true;
   const showPorts = layers?.find(l => l.id === 'ports')?.visible ?? false;
   const showRestore = layers?.find(l => l.id === 'restore')?.visible ?? true;
@@ -335,12 +336,12 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
       )}
 
       {/* Reclamation Sites Markers */}
-      {sites.map((site, index) => {
+      {showMarkers && sites.map((site, index) => {
         // Skip sites without valid coordinates
         if (!site.lat || !site.lon || isNaN(site.lat) || isNaN(site.lon)) {
           return null;
         }
-        
+
         return (
           <Marker
             key={`${site.name}-${index}`}
