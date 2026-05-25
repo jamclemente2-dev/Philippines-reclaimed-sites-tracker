@@ -93407,7 +93407,13 @@
     },
     {
       "type": "Feature",
-      "geometry": null,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.0,
+          12.0
+        ]
+      },
       "properties": {
         "Name": "William Tan Enterprises, Inc.",
         "Code name": "PAL-PPR-011",
@@ -94373,7 +94379,13 @@
     },
     {
       "type": "Feature",
-      "geometry": null,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.0,
+          12.0
+        ]
+      },
       "properties": {
         "Name": "Citinickel Mines and Development Corporation Sofroño Espaniola Reclamation for PIer",
         "Code name": "PAL-SOF-001",
@@ -99603,7 +99615,13 @@
     },
     {
       "type": "Feature",
-      "geometry": null,
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.0,
+          12.0
+        ]
+      },
       "properties": {
         "Name": "Coron Mixed-Use Reclamation",
         "Code name": "",
