@@ -53,6 +53,20 @@ const restoreMarkerIcon = L.divIcon({
   popupAnchor: [0, -34],
 });
 
+// Purple marker icon for applications (created once)
+const applicationMarkerIcon = L.divIcon({
+  html: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" width="24" height="32">
+      <path fill="#9333ea" stroke="white" stroke-width="1.5"
+        d="M12 1C6.477 1 2 5.477 2 11c0 7.5 10 20 10 20S22 18.5 22 11C22 5.477 17.523 1 12 1z"/>
+      <circle cx="12" cy="11" r="4.5" fill="white" opacity="0.92"/>
+    </svg>`,
+  className: '',
+  iconSize:    [24, 32],
+  iconAnchor:  [12, 32],
+  popupAnchor: [0, -34],
+});
+
 // Orange marker icon for regular reclamation projects (created once)
 const regularMarkerIcon = L.divIcon({
   html: `
@@ -165,6 +179,7 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
   const [ports, setPorts] = useState([]);
   const [restoreFeatures, setRestoreFeatures] = useState([]);
   const [regularFeatures, setRegularFeatures] = useState([]);
+  const [applicationFeatures, setApplicationFeatures] = useState([]);
   const [basemap, setBasemap] = useState('street'); // 'street' or 'satellite'
 
   // Get layer visibility from sidebar
@@ -172,7 +187,8 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
   const showPolygons = layers?.find(l => l.id === 'polygons')?.visible ?? true;
   const showPorts = layers?.find(l => l.id === 'ports')?.visible ?? false;
   const showRestore = layers?.find(l => l.id === 'restore')?.visible ?? true;
-  const showRegular = layers?.find(l => l.id === 'regular')?.visible ?? true;
+  const showRegular       = layers?.find(l => l.id === 'regular')?.visible ?? true;
+  const showApplications  = layers?.find(l => l.id === 'applications')?.visible ?? true;
 
   // Load Restoration Projects GeoJSON
   useEffect(() => {
@@ -213,6 +229,27 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
         console.log(`✅ Loaded ${parsed.length} regular reclamation polygons`);
       })
       .catch(err => console.log('⚠️ RegularReclamations not loaded:', err.message));
+  }, []);
+
+  // Load Applications GeoJSON
+  useEffect(() => {
+    const path = `${import.meta.env.BASE_URL}Applications.geojson`;
+    fetch(path)
+      .then(r => r.ok ? r.json() : null)
+      .then(geojson => {
+        if (!geojson?.features) return;
+        const parsed = geojson.features
+          .filter(f => f.geometry?.type === 'Polygon')
+          .map(f => ({
+            positions: f.geometry.coordinates[0].map(([lon, lat]) => [lat, lon]),
+            application_name: f.properties.application_name,
+            lot_name:         f.properties.lot_name,
+            province:         f.properties.province,
+          }));
+        setApplicationFeatures(parsed);
+        console.log(`✅ Loaded ${parsed.length} application polygons`);
+      })
+      .catch(err => console.log('⚠️ Applications not loaded:', err.message));
   }, []);
 
   // Load ports GeoJSON
@@ -438,6 +475,46 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
                   </div>
                 </Popup>
               </Marker>
+            );
+          })}
+        </FeatureGroup>
+      )}
+
+      {/* Applications Layer */}
+      {showApplications && applicationFeatures.length > 0 && (
+        <FeatureGroup>
+          {applicationFeatures.map((f, i) => {
+            const centroid = calcCentroid(f.positions);
+            const popup = (
+              <Popup maxWidth={280} minWidth={200}>
+                <div className="popup-content">
+                  <div style={{ fontSize: '11px', color: '#9333ea', fontWeight: 700, textTransform: 'uppercase', marginBottom: 4 }}>
+                    Application{f.province ? ` — ${f.province}` : ''}
+                  </div>
+                  <h3 style={{ marginBottom: 6 }}>{f.application_name}</h3>
+                  {f.lot_name && (
+                    <div className="info-row">
+                      <span className="label">Parcel:</span>
+                      <span className="value">{f.lot_name}</span>
+                    </div>
+                  )}
+                </div>
+              </Popup>
+            );
+            return (
+              <Fragment key={`app-${i}`}>
+                <Polygon
+                  positions={f.positions}
+                  pathOptions={{ color: '#9333ea', fillColor: '#c084fc', fillOpacity: 0.3, weight: 2 }}
+                >
+                  {popup}
+                </Polygon>
+                {centroid && (
+                  <Marker position={centroid} icon={applicationMarkerIcon}>
+                    {popup}
+                  </Marker>
+                )}
+              </Fragment>
             );
           })}
         </FeatureGroup>

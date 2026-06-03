@@ -18,6 +18,7 @@ const INITIAL_LAYERS = [
   { id: 'polygons', name: 'Reclamation Polygons', visible: true },
   { id: 'restore', name: 'Restoration Projects', visible: true },
   { id: 'regular', name: 'Regular Reclamation Projects', visible: true },
+  { id: 'applications', name: 'Applications', visible: true },
   { id: 'ports', name: 'Ports (OpenStreetMap)', visible: false }
 ];
 
