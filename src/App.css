@@ -1165,18 +1165,20 @@ body {
     padding: 16px 24px;
   }
 
+  /* Switch off flex so block-level page breaks work */
   .detail-body {
-    flex-direction: column;
+    display: block;
     padding: 16px 24px;
-    gap: 0;
   }
 
   .detail-main {
+    display: block;
     width: 100%;
   }
 
   /* Photos section: always starts on a fresh page */
   .detail-section--photos {
+    display: block;
     break-before: page;
     page-break-before: always;
   }
