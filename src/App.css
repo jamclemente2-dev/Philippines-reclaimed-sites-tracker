@@ -1142,6 +1142,9 @@ body {
 /* Screen: portal photos are hidden; photos section visible normally */
 .photos-print-portal { display: none; }
 
+/* Remove browser-default print headers (title/URL) and footers (page/date) */
+@page { margin: 0; }
+
 @media print {
   /* Hide UI elements not needed in PDF */
   .detail-header-actions,
