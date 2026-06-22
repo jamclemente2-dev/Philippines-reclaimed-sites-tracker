@@ -109,9 +109,9 @@ function SiteDetail({ site }) {
             </section>
           )}
 
-          {/* Photos */}
+          {/* Photos — screen only */}
           {photos.length > 0 && (
-            <section className="detail-section detail-section--photos">
+            <section className="detail-section no-print">
               <h2 className="detail-section-title">Photos ({photos.length})</h2>
               <div className="detail-photos">
                 {photos.map((photo, i) => (
@@ -132,6 +132,24 @@ function SiteDetail({ site }) {
             </section>
           )}
         </div>
+
+        {/* Photos — print only, direct child of detail-body so page break works */}
+        {photos.length > 0 && (
+          <section className="detail-section detail-section--photos print-only">
+            <h2 className="detail-section-title">Photos ({photos.length})</h2>
+            <div className="detail-photos">
+              {photos.map((photo, i) => (
+                <img
+                  key={i}
+                  src={photo}
+                  alt={`Photo ${i + 1}`}
+                  className="detail-photo-thumb"
+                  onError={e => { e.currentTarget.style.display = 'none'; }}
+                />
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* ── Right / Document column ── */}
         <div className="detail-doc-panel">
