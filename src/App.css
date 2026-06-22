@@ -812,6 +812,17 @@ body {
 
 /* ── Notes ─────────────────────────────────────────────────────── */
 
+.detail-notes-block {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f3f4f6;
+}
+
+.detail-notes-block .detail-label {
+  display: block;
+  margin-bottom: 4px;
+}
+
 .detail-notes {
   font-size: 14px;
   color: #374151;

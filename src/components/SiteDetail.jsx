@@ -76,39 +76,35 @@ function SiteDetail({ site }) {
         {/* ── Left / Main column ── */}
         <div className="detail-main">
 
-          {/* Key figures */}
+          {/* Site details */}
           <section className="detail-section">
             <h2 className="detail-section-title">Site Information</h2>
             <div className="detail-grid">
-              <DetailRow label="Area"               value={site.area ? `${site.area} ha` : null} />
-              <DetailRow label="Area (PRA)"         value={site.area_pra ? `${site.area_pra} ha` : null} />
-              <DetailRow label="PRA Status"         value={site.pra_status} />
-              <DetailRow label="Developer"          value={site.developer} />
-              <DetailRow label="Year Started"       value={site.year_start} />
-              <DetailRow label="Year Completed"     value={site.year_end} />
-              <DetailRow label="Data by"            value={site.author} />
+              <DetailRow label="Project Site"                   value={site.name} />
+              <DetailRow label="Code Name"                      value={site.code_name} />
+              <DetailRow label="Latitude"                       value={site.lat} />
+              <DetailRow label="Longitude"                      value={site.lon} />
+              <DetailRow label="Area of Polygon"                value={site.area ? `${site.area} ha` : null} />
+              <DetailRow label="Area indicated in PRA database" value={site.area_pra ? `${site.area_pra} ha` : null} />
+              <DetailRow label="Status of Reclamation"          value={site.status} />
+              <DetailRow label="Listed in PRA database?"        value={site.pra_status} />
+              <DetailRow label="Year Start of Reclamation"      value={site.year_start} />
+              <DetailRow label="Year End of Reclamation"        value={site.year_end} />
+              <DetailRow label="Developer/Owner"                value={site.developer} />
+              <DetailRow label="Barangay"                       value={site.barangay} />
+              <DetailRow label="Municipality/City"              value={site.municipality} />
+              <DetailRow label="Province"                       value={site.province} />
+              <DetailRow label="Region"                         value={site.region} />
+              <DetailRow label="Author"                         value={site.author} />
             </div>
+            {(site.notes || site.comments) && (
+              <div className="detail-notes-block">
+                <span className="detail-label">Remarks/Notes</span>
+                {site.notes    && <p className="detail-notes">{site.notes}</p>}
+                {site.comments && <p className="detail-notes">{site.comments}</p>}
+              </div>
+            )}
           </section>
-
-          {/* Location */}
-          <section className="detail-section">
-            <h2 className="detail-section-title">Location</h2>
-            <div className="detail-grid">
-              <DetailRow label="Barangay"           value={site.barangay} />
-              <DetailRow label="Municipality/City"  value={site.municipality} />
-              <DetailRow label="Province"           value={site.province} />
-              <DetailRow label="Region"             value={site.region} />
-            </div>
-          </section>
-
-          {/* Notes */}
-          {(site.notes || site.comments) && (
-            <section className="detail-section">
-              <h2 className="detail-section-title">Notes</h2>
-              {site.notes    && <p className="detail-notes">{site.notes}</p>}
-              {site.comments && <p className="detail-notes">{site.comments}</p>}
-            </section>
-          )}
 
           {/* Photos — screen only */}
           {photos.length > 0 && (
