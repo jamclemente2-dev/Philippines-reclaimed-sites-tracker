@@ -111,7 +111,7 @@ function SiteDetail({ site }) {
 
           {/* Photos */}
           {photos.length > 0 && (
-            <section className="detail-section">
+            <section className="detail-section detail-section--photos">
               <h2 className="detail-section-title">Photos ({photos.length})</h2>
               <div className="detail-photos">
                 {photos.map((photo, i) => (

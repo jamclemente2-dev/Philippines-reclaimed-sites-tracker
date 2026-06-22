@@ -1176,7 +1176,7 @@ body {
   }
 
   /* Photos section: always starts on a fresh page */
-  .detail-section:has(.detail-photos) {
+  .detail-section--photos {
     break-before: page;
     page-break-before: always;
   }
