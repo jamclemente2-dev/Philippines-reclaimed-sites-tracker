@@ -110,10 +110,10 @@ function SitePopup({ site, onPhotoClick }) {
     <div className="popup-content">
       <h3>{site.name || 'Unnamed Site'}</h3>
 
-      <InfoRow label="Area"              value={site.area ? `${site.area} ha` : null} />
-      <InfoRow label="Area (PRA)"        value={site.area_pra ? `${site.area_pra} ha` : null} />
-      <InfoRow label="Status"            value={site.status} />
-      <InfoRow label="PRA Status"        value={site.pra_status} />
+      <InfoRow label="Area"              value={site.area ? `${site.area} ha` : '—'} />
+      <InfoRow label="Area (PRA)"        value={site.area_pra ? `${site.area_pra} ha` : '—'} />
+      <InfoRow label="Status"            value={site.status || '—'} />
+      <InfoRow label="PRA Status"        value={site.pra_status || '—'} />
       <InfoRow label="Year Start"        value={site.year_start} />
       <InfoRow label="Year End"          value={site.year_end} />
       <InfoRow label="Developer"         value={site.developer} />
