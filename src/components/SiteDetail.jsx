@@ -78,32 +78,55 @@ function SiteDetail({ site }) {
 
           {/* Site details */}
           <section className="detail-section">
-            <h2 className="detail-section-title">Site Information</h2>
-            <div className="detail-grid">
-              <DetailRow label="Project Site"                   value={site.name} />
-              <DetailRow label="Code Name"                      value={site.code_name} />
-              <DetailRow label="Latitude"                       value={site.lat} />
-              <DetailRow label="Longitude"                      value={site.lon} />
-              <DetailRow label="Area of Polygon"                value={site.area ? `${site.area} ha` : null} />
-              <DetailRow label="Area indicated in PRA database" value={site.area_pra ? `${site.area_pra} ha` : null} />
-              <DetailRow label="Status of Reclamation"          value={site.status} />
-              <DetailRow label="Listed in PRA database?"        value={site.pra_status} />
-              <DetailRow label="Year Start of Reclamation"      value={site.year_start} />
-              <DetailRow label="Year End of Reclamation"        value={site.year_end} />
-              <DetailRow label="Developer/Owner"                value={site.developer} />
-              <DetailRow label="Barangay"                       value={site.barangay} />
-              <DetailRow label="Municipality/City"              value={site.municipality} />
-              <DetailRow label="Province"                       value={site.province} />
-              <DetailRow label="Region"                         value={site.region} />
-              <DetailRow label="Author"                         value={site.author} />
+
+            <div className="detail-group">
+              <h3 className="detail-group-title">Project Identification</h3>
+              <div className="detail-grid">
+                <DetailRow label="Project Site"            value={site.name} />
+                <DetailRow label="Code Name"               value={site.code_name} />
+                <DetailRow label="Status of Reclamation"   value={site.status} />
+                <DetailRow label="Listed in PRA database?" value={site.pra_status} />
+              </div>
             </div>
+
+            <div className="detail-group">
+              <h3 className="detail-group-title">Area &amp; Coordinates</h3>
+              <div className="detail-grid">
+                <DetailRow label="Area of Polygon"                value={site.area ? `${site.area} ha` : null} />
+                <DetailRow label="Area indicated in PRA database" value={site.area_pra ? `${site.area_pra} ha` : null} />
+                <DetailRow label="Latitude"                       value={site.lat} />
+                <DetailRow label="Longitude"                      value={site.lon} />
+              </div>
+            </div>
+
+            <div className="detail-group">
+              <h3 className="detail-group-title">Timeline &amp; Developer</h3>
+              <div className="detail-grid">
+                <DetailRow label="Year Start of Reclamation" value={site.year_start} />
+                <DetailRow label="Year End of Reclamation"   value={site.year_end} />
+                <DetailRow label="Developer/Owner"           value={site.developer} />
+                <DetailRow label="Author"                    value={site.author} />
+              </div>
+            </div>
+
+            <div className="detail-group">
+              <h3 className="detail-group-title">Location</h3>
+              <div className="detail-grid">
+                <DetailRow label="Barangay"          value={site.barangay} />
+                <DetailRow label="Municipality/City" value={site.municipality} />
+                <DetailRow label="Province"          value={site.province} />
+                <DetailRow label="Region"            value={site.region} />
+              </div>
+            </div>
+
             {(site.notes || site.comments) && (
-              <div className="detail-notes-block">
-                <span className="detail-label">Remarks/Notes</span>
+              <div className="detail-group">
+                <h3 className="detail-group-title">Remarks / Notes</h3>
                 {site.notes    && <p className="detail-notes">{site.notes}</p>}
                 {site.comments && <p className="detail-notes">{site.comments}</p>}
               </div>
             )}
+
           </section>
 
           {/* Photos — screen only */}

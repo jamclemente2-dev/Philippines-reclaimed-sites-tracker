@@ -776,6 +776,27 @@ body {
   align-items: center;
 }
 
+/* ── Detail groups (screen) ────────────────────────────────────── */
+
+.detail-group {
+  margin-bottom: 20px;
+}
+
+.detail-group:last-child {
+  margin-bottom: 0;
+}
+
+.detail-group-title {
+  font-size: 11px;
+  font-weight: 700;
+  color: #1e40af;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  border-bottom: 2px solid #dbeafe;
+  padding-bottom: 5px;
+  margin: 0 0 10px 0;
+}
+
 /* ── Detail rows grid ──────────────────────────────────────────── */
 
 .detail-grid {
@@ -1157,37 +1178,62 @@ body {
 @page { margin: 0; }
 
 @media print {
-  /* Hide UI elements not needed in PDF */
+  /* ── Hide screen-only elements ── */
   .detail-header-actions,
   .detail-doc-panel,
   .no-print {
     display: none !important;
   }
 
-  /* Reset page chrome */
   body {
     overflow: visible;
     background: white;
+    font-family: 'Segoe UI', Arial, sans-serif;
   }
 
-  /* Unclip the scroll container so content can flow across pages */
+  /* Unclip scroll container */
   .site-detail-page {
     max-width: 100%;
     height: auto !important;
     overflow: visible !important;
+    background: white;
   }
 
+  /* ── Header ── */
   .detail-header {
-    background: #1e40af !important;
+    background: #1e3a8a !important;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
-    padding: 16px 24px;
+    padding: 20px 28px 18px;
   }
 
-  /* Switch off flex so block-level page breaks work */
+  .detail-site-name {
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 0.01em;
+  }
+
+  .detail-code-name {
+    font-size: 12px;
+    opacity: 0.8;
+    margin-top: 2px;
+  }
+
+  .detail-status-badge {
+    font-size: 10px;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* ── Body layout ── */
   .detail-body {
     display: block;
-    padding: 16px 24px;
+    padding: 20px 28px;
+    background: white;
   }
 
   .detail-main {
@@ -1195,50 +1241,130 @@ body {
     width: 100%;
   }
 
-  /* Section spacing */
+  /* ── Section card — remove screen styling ── */
   .detail-section {
-    break-inside: avoid;
-    margin-bottom: 16px;
+    background: none;
+    border-radius: 0;
+    box-shadow: none;
+    padding: 0;
+    margin-bottom: 0;
+    break-inside: auto;
   }
 
-  /* Status badge colours */
-  .detail-status-badge {
+  /* ── Groups ── */
+  .detail-group {
+    margin-bottom: 14px;
+    break-inside: avoid;
+  }
+
+  .detail-group:last-child {
+    margin-bottom: 0;
+  }
+
+  .detail-group-title {
+    font-size: 9px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: white;
+    background: #1e3a8a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 4px 10px;
+    margin: 0 0 0 0;
+    border: none;
+  }
+
+  /* ── Rows: switch from stacked card to horizontal table ── */
+  .detail-grid {
+    display: block;
+    border: 1px solid #d1d5db;
+    border-top: none;
+  }
+
+  .detail-row {
+    display: flex;
+    flex-direction: row;
+    align-items: baseline;
+    border-bottom: 1px solid #e5e7eb;
+    padding: 0;
+  }
+
+  .detail-row:last-child {
+    border-bottom: none;
+  }
+
+  .detail-row:nth-child(even) {
+    background: #f8faff;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
   }
 
-  /* ── Photos — page 2 ──────────────────────────────────────────── */
-  /* Rendered via React portal directly in <body>, so it sits OUTSIDE
-     the site-detail-page overflow container. break-before: page is
-     unconditional here — no parent can suppress it. */
+  .detail-label {
+    flex: 0 0 42%;
+    font-size: 9px;
+    font-weight: 600;
+    color: #4b5563;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: 5px 10px;
+    border-right: 1px solid #e5e7eb;
+    background: inherit;
+  }
+
+  .detail-value {
+    flex: 1;
+    font-size: 10px;
+    color: #111827;
+    font-weight: 400;
+    padding: 5px 10px;
+  }
+
+  /* ── Notes group ── */
+  .detail-notes {
+    font-size: 10px;
+    color: #374151;
+    line-height: 1.6;
+    padding: 8px 10px;
+    border: 1px solid #d1d5db;
+    border-top: none;
+    margin: 0;
+  }
+
+  /* ── Photos — page 2 ── */
   .photos-print-portal {
     display: block !important;
     break-before: page;
     page-break-before: always;
-    padding: 16px 24px;
+    padding: 20px 28px;
   }
 
   .photos-print-title {
-    font-size: 11px;
-    font-weight: 600;
+    font-size: 9px;
+    font-weight: 700;
     text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: #374151;
+    letter-spacing: 0.12em;
+    color: white;
+    background: #1e3a8a !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 4px 10px;
     margin: 0 0 12px 0;
   }
 
   .photos-print-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
   }
 
   .photos-print-img {
     width: 100%;
     max-height: 22vh;
     object-fit: contain;
-    border-radius: 6px;
+    border-radius: 4px;
     display: block;
     background: #f3f4f6;
+    border: 1px solid #e5e7eb;
   }
 }
