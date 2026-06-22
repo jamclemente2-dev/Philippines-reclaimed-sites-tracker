@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { createPortal } from 'react-dom';
 import { ArrowLeft, Download, ExternalLink, FileText, Printer } from 'lucide-react';
 import Lightbox from './Lightbox';
 
@@ -133,24 +134,6 @@ function SiteDetail({ site }) {
           )}
         </div>
 
-        {/* Photos — print only, direct child of detail-body so page break works */}
-        {photos.length > 0 && (
-          <section className="detail-section detail-section--photos print-only">
-            <h2 className="detail-section-title">Photos ({photos.length})</h2>
-            <div className="detail-photos">
-              {photos.map((photo, i) => (
-                <img
-                  key={i}
-                  src={photo}
-                  alt={`Photo ${i + 1}`}
-                  className="detail-photo-thumb"
-                  onError={e => { e.currentTarget.style.display = 'none'; }}
-                />
-              ))}
-            </div>
-          </section>
-        )}
-
         {/* ── Right / Document column ── */}
         <div className="detail-doc-panel">
           <section className="detail-section">
@@ -205,6 +188,26 @@ function SiteDetail({ site }) {
 
       </div>
     </div>
+
+    {/* Photos portal — renders directly in <body>, outside all overflow containers.
+        break-before: page is guaranteed to work here. */}
+    {photos.length > 0 && createPortal(
+      <section className="photos-print-portal">
+        <h2 className="photos-print-title">Photos ({photos.length})</h2>
+        <div className="photos-print-grid">
+          {photos.map((photo, i) => (
+            <img
+              key={i}
+              src={photo}
+              alt={`Photo ${i + 1}`}
+              className="photos-print-img"
+              onError={e => { e.currentTarget.style.display = 'none'; }}
+            />
+          ))}
+        </div>
+      </section>,
+      document.body
+    )}
 
     {lightboxIdx !== null && (
       <Lightbox
