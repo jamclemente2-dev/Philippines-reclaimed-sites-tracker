@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ArrowLeft, Download, ExternalLink, FileText, Calendar, CheckCircle2, XCircle, ClipboardList } from 'lucide-react';
+import { ArrowLeft, Download, ExternalLink, FileText, Printer } from 'lucide-react';
 import Lightbox from './Lightbox';
 
 function extractGoogleDriveId(url) {
@@ -18,56 +18,6 @@ function DetailRow({ label, value }) {
   );
 }
 
-function PaymentChecklist({ startYear, endYear, paymentsPaid }) {
-  if (!startYear || !endYear) return null;
-
-  const paidSet = new Set(
-    (paymentsPaid || '')
-      .split(',')
-      .map(y => y.trim())
-      .filter(Boolean)
-  );
-
-  const start = parseInt(startYear, 10);
-  const end   = parseInt(endYear, 10);
-  if (isNaN(start) || isNaN(end) || end < start) return null;
-
-  const years = [];
-  for (let y = start; y <= end; y++) years.push(y);
-
-  const paidCount   = years.filter(y => paidSet.has(String(y))).length;
-  const unpaidCount = years.length - paidCount;
-
-  return (
-    <section className="detail-section">
-      <h2 className="detail-section-title">
-        <ClipboardList size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-        Renewal Payment History
-        <span className="checklist-summary">
-          <span className="summary-paid">{paidCount} paid</span>
-          {unpaidCount > 0 && <span className="summary-unpaid">{unpaidCount} unpaid</span>}
-        </span>
-      </h2>
-
-      <div className="payment-checklist">
-        {years.map(year => {
-          const paid = paidSet.has(String(year));
-          return (
-            <div key={year} className={`payment-row ${paid ? 'paid' : 'unpaid'}`}>
-              <span className="payment-icon">
-                {paid
-                  ? <CheckCircle2 size={17} />
-                  : <XCircle size={17} />}
-              </span>
-              <span className="payment-label">{year} Renewal Payment</span>
-              <span className="payment-status">{paid ? 'Paid' : 'Unpaid'}</span>
-            </div>
-          );
-        })}
-      </div>
-    </section>
-  );
-}
 
 function SiteDetail({ site }) {
   const [lightboxIdx, setLightboxIdx] = useState(null);
@@ -91,13 +41,22 @@ function SiteDetail({ site }) {
 
       {/* ── Header ── */}
       <div className="detail-header">
-        <a
-          href={import.meta.env.BASE_URL}
-          className="back-btn"
-        >
-          <ArrowLeft size={15} />
-          Back to Map
-        </a>
+        <div className="detail-header-actions">
+          <a
+            href={import.meta.env.BASE_URL}
+            className="back-btn"
+          >
+            <ArrowLeft size={15} />
+            Back to Map
+          </a>
+          <button
+            className="print-btn"
+            onClick={() => window.print()}
+          >
+            <Printer size={15} />
+            Download Report as PDF
+          </button>
+        </div>
 
         <div className="detail-title-block">
           <div className="detail-title-row">
@@ -129,28 +88,6 @@ function SiteDetail({ site }) {
               <DetailRow label="Data by"            value={site.author} />
             </div>
           </section>
-
-          {/* Registration / Payment */}
-          <section className="detail-section">
-            <h2 className="detail-section-title">
-              <Calendar size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-              Registration &amp; Payment
-            </h2>
-            <div className="detail-grid">
-              <DetailRow label="Registration Date"  value={site.registration_date} />
-              <DetailRow label="Last Payment Date"  value={site.last_payment_date} />
-            </div>
-            {!site.registration_date && !site.last_payment_date && (
-              <p className="detail-empty-note">No registration or payment records on file.</p>
-            )}
-          </section>
-
-          {/* Payment Checklist */}
-          <PaymentChecklist
-            startYear={site.payment_start_year}
-            endYear={site.payment_end_year}
-            paymentsPaid={site.payments_paid}
-          />
 
           {/* Location */}
           <section className="detail-section">

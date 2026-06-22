@@ -636,6 +636,13 @@ body {
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
+.detail-header-actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+
 .back-btn {
   display: inline-flex;
   align-items: center;
@@ -644,12 +651,30 @@ body {
   font-size: 13px;
   font-weight: 500;
   text-decoration: none;
-  margin-bottom: 12px;
   transition: color 0.15s;
 }
 
 .back-btn:hover {
   color: white;
+}
+
+.print-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.print-btn:hover {
+  background: rgba(255, 255, 255, 0.25);
 }
 
 .detail-title-block {
@@ -1110,4 +1135,74 @@ body {
 
 .login-btn:hover {
   background: #1d4ed8;
+}
+
+/* ── Print / PDF export ────────────────────────────────────────── */
+
+@media print {
+  /* Hide everything that should not appear in the PDF */
+  .detail-header-actions,
+  .detail-doc-panel,
+  .detail-photo-btn {
+    display: none !important;
+  }
+
+  /* Reset page chrome */
+  body {
+    overflow: visible;
+    background: white;
+  }
+
+  /* Full-width single-column layout */
+  .site-detail-page {
+    max-width: 100%;
+  }
+
+  .detail-header {
+    background: #1e40af !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+    padding: 16px 24px;
+  }
+
+  .detail-body {
+    flex-direction: column;
+    padding: 16px 24px;
+    gap: 0;
+  }
+
+  .detail-main {
+    width: 100%;
+  }
+
+  /* Show photos in print */
+  .detail-photos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .detail-photo-btn {
+    display: block !important;
+    pointer-events: none;
+  }
+
+  .detail-photo-thumb {
+    width: 160px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+
+  /* Section spacing */
+  .detail-section {
+    break-inside: avoid;
+    margin-bottom: 16px;
+  }
+
+  /* Status badge colours */
+  .detail-status-badge {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
 }
