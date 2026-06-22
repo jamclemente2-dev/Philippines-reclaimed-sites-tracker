@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { createPortal } from 'react-dom';
-import { ArrowLeft, Download, ExternalLink, FileText, Printer } from 'lucide-react';
+import { ArrowLeft, Printer } from 'lucide-react';
 import Lightbox from './Lightbox';
 
 function extractGoogleDriveId(url) {
@@ -23,14 +23,6 @@ function DetailRow({ label, value }) {
 function SiteDetail({ site }) {
   const [lightboxIdx, setLightboxIdx] = useState(null);
   const photos = site.photos || [];
-
-  const fileId = site.document ? extractGoogleDriveId(site.document) : null;
-  const previewUrl = fileId
-    ? `https://drive.google.com/file/d/${fileId}/preview`
-    : null;
-  const downloadUrl = fileId
-    ? `https://drive.google.com/uc?export=download&id=${fileId}`
-    : null;
 
   const statusClass = `detail-status-badge status-${(site.status || 'unknown')
     .toLowerCase()
@@ -122,57 +114,6 @@ function SiteDetail({ site }) {
           )}
         </div>
 
-        {/* ── Right / Document column ── */}
-        <div className="detail-doc-panel">
-          <section className="detail-section">
-            <h2 className="detail-section-title">
-              <FileText size={14} style={{ marginRight: 6, verticalAlign: 'middle' }} />
-              Document
-            </h2>
-
-            {fileId ? (
-              <>
-                <div className="doc-actions">
-                  <a
-                    href={previewUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="doc-btn doc-btn-view"
-                  >
-                    <ExternalLink size={13} />
-                    View PDF
-                  </a>
-                  <a
-                    href={downloadUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="doc-btn doc-btn-download"
-                  >
-                    <Download size={13} />
-                    Download
-                  </a>
-                </div>
-                <div className="pdf-embed-wrapper">
-                  <iframe
-                    src={previewUrl}
-                    title="Document Preview"
-                    className="pdf-iframe"
-                    allow="autoplay"
-                  />
-                </div>
-              </>
-            ) : (
-              <div className="no-doc-box">
-                <FileText size={32} className="no-doc-icon" />
-                <p>No document attached to this site.</p>
-                <p className="no-doc-hint">
-                  Add a Google Drive PDF link to the <code>document</code> field
-                  in <code>ReclamationSites.geojson</code> to enable this.
-                </p>
-              </div>
-            )}
-          </section>
-        </div>
 
       </div>
     </div>
