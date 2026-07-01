@@ -11,6 +11,7 @@ const INITIAL_FILTERS = {
   province: '',
   region: '',
   developer: '',
+  pra_status: '',
 };
 
 const INITIAL_LAYERS = [
@@ -133,12 +134,25 @@ function App() {
       !filters[key] ||
       (site[field] || '').toLowerCase().includes(filters[key].toLowerCase());
 
+    let praMatch = true;
+    if (filters.pra_status) {
+      const val = site.pra_status || '';
+      if (filters.pra_status === 'Not listed') {
+        praMatch = val === 'Not listed';
+      } else if (filters.pra_status === 'Listed') {
+        praMatch = val.startsWith('Listed');
+      } else {
+        praMatch = val.toLowerCase().includes(filters.pra_status.toLowerCase());
+      }
+    }
+
     return (
       match('name', 'name') &&
       match('municipality', 'municipality') &&
       match('province', 'province') &&
       match('region', 'region') &&
-      match('developer', 'developer')
+      match('developer', 'developer') &&
+      praMatch
     );
   });
 

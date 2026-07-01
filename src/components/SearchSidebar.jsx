@@ -8,6 +8,12 @@ const FILTER_FIELDS = [
   { key: 'developer',   label: 'Developer',     placeholder: 'Search by developer…' },
 ];
 
+const PRA_STATUS_OPTIONS = [
+  { value: '',            label: 'All' },
+  { value: 'Not listed',  label: 'Not listed' },
+  { value: 'Listed',      label: 'Listed' },
+];
+
 function SearchSidebar({
   filters,
   onFilterChange,
@@ -49,6 +55,19 @@ function SearchSidebar({
             />
           </div>
         ))}
+
+        <div className="filter-group">
+          <label htmlFor="filter-pra_status">PRA Status</label>
+          <select
+            id="filter-pra_status"
+            value={filters.pra_status}
+            onChange={e => onFilterChange('pra_status', e.target.value)}
+          >
+            {PRA_STATUS_OPTIONS.map(({ value, label }) => (
+              <option key={value} value={value}>{label}</option>
+            ))}
+          </select>
+        </div>
 
         {hasActiveFilters && (
           <button className="clear-btn" onClick={onClearFilters}>

@@ -104,7 +104,8 @@ body {
   letter-spacing: 0.05em;
 }
 
-.filter-group input {
+.filter-group input,
+.filter-group select {
   width: 100%;
   padding: 7px 10px;
   border: 1px solid #d1d5db;
@@ -114,9 +115,11 @@ body {
   background: #fafafa;
   transition: border-color 0.15s, box-shadow 0.15s;
   color: #111827;
+  box-sizing: border-box;
 }
 
-.filter-group input:focus {
+.filter-group input:focus,
+.filter-group select:focus {
   border-color: #1e40af;
   background: #fff;
   box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
