@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo, Fragment } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, Polygon, FeatureGroup, CircleMarker, Tooltip } from 'react-leaflet';
+import { useState, useEffect, useRef, useMemo, Fragment } from 'react';
+import { MapContainer, TileLayer, Marker, Popup, Polygon, FeatureGroup, CircleMarker, Tooltip, useMap } from 'react-leaflet';
 import L from 'leaflet';
 
 // ── Marker icon helpers ───────────────────────────────────────────────────────
@@ -173,9 +173,59 @@ function convertPolygonCoordinates(geometry) {
   return null;
 }
 
+// ── Fit bounds when filtered sites change ─────────────────────────────────────
+
+function FitBoundsController({ sites, hasActiveFilters }) {
+  const map = useMap();
+  const isFirstRender = useRef(true);
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
+
+    if (!hasActiveFilters) {
+      map.setView([12.8797, 121.774], 6);
+      return;
+    }
+
+    if (sites.length === 0) return;
+
+    const points = [];
+    sites.forEach(site => {
+      if (site.geometry) {
+        const g = site.geometry;
+        const ring = g.type === 'Polygon'
+          ? g.coordinates[0]
+          : g.type === 'MultiPolygon'
+            ? g.coordinates[0][0]
+            : null;
+        if (ring) {
+          ring.forEach(([lon, lat]) => {
+            if (Math.abs(lon) < 180 && Math.abs(lat) < 90) points.push([lat, lon]);
+          });
+          return;
+        }
+      }
+      if (site.lat && site.lon && !isNaN(site.lat) && !isNaN(site.lon)) {
+        points.push([site.lat, site.lon]);
+      }
+    });
+
+    if (points.length === 0) return;
+    const bounds = L.latLngBounds(points);
+    if (bounds.isValid()) {
+      map.fitBounds(bounds, { padding: [60, 60], maxZoom: 16 });
+    }
+  }, [sites, hasActiveFilters]);
+
+  return null;
+}
+
 // ── Map component ─────────────────────────────────────────────────────────────
 
-function MapDisplay({ sites, onPhotoClick, layers }) {
+function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
   const [ports, setPorts] = useState([]);
   const [restoreFeatures, setRestoreFeatures] = useState([]);
   const [regularFeatures, setRegularFeatures] = useState([]);
@@ -329,6 +379,8 @@ function MapDisplay({ sites, onPhotoClick, layers }) {
       zoom={6}
       style={{ width: '100%', height: '100vh' }}
     >
+      <FitBoundsController sites={sites} hasActiveFilters={hasActiveFilters} />
+
       {/* Basemap Layers */}
       {basemap === 'street' ? (
         <TileLayer

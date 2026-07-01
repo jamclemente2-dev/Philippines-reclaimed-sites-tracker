@@ -209,6 +209,7 @@ function App() {
           sites={filteredSites}
           onPhotoClick={openLightbox}
           layers={layers}
+          hasActiveFilters={Object.values(filters).some(v => v !== '')}
         />
       </div>
       {lightbox.open && (
