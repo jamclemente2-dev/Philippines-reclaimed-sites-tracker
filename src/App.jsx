@@ -129,32 +129,43 @@ function App() {
       });
   }, []);
 
-  const filteredSites = useMemo(() => allSites.filter(site => {
-    const match = (field, key) =>
-      !filters[key] ||
-      (site[field] || '').toLowerCase().includes(filters[key].toLowerCase());
+  const filteredSites = useMemo(() => {
+    const nameFilter = filters.name.trim().toLowerCase();
+    const hasExactNameMatch = nameFilter !== '' &&
+      allSites.some(site => (site.name || '').trim().toLowerCase() === nameFilter);
 
-    let praMatch = true;
-    if (filters.pra_status) {
-      const val = site.pra_status || '';
-      if (filters.pra_status === 'Not listed') {
-        praMatch = val === 'Not listed';
-      } else if (filters.pra_status === 'Listed') {
-        praMatch = val.startsWith('Listed');
-      } else {
-        praMatch = val.toLowerCase().includes(filters.pra_status.toLowerCase());
+    return allSites.filter(site => {
+      const match = (field, key) =>
+        !filters[key] ||
+        (site[field] || '').toLowerCase().includes(filters[key].toLowerCase());
+
+      const nameMatch = nameFilter === '' ||
+        (hasExactNameMatch
+          ? (site.name || '').trim().toLowerCase() === nameFilter
+          : (site.name || '').toLowerCase().includes(nameFilter));
+
+      let praMatch = true;
+      if (filters.pra_status) {
+        const val = site.pra_status || '';
+        if (filters.pra_status === 'Not listed') {
+          praMatch = val === 'Not listed';
+        } else if (filters.pra_status === 'Listed') {
+          praMatch = val.startsWith('Listed');
+        } else {
+          praMatch = val.toLowerCase().includes(filters.pra_status.toLowerCase());
+        }
       }
-    }
 
-    return (
-      match('name', 'name') &&
-      match('municipality', 'municipality') &&
-      match('province', 'province') &&
-      match('region', 'region') &&
-      match('developer', 'developer') &&
-      praMatch
-    );
-  }), [allSites, filters]);
+      return (
+        nameMatch &&
+        match('municipality', 'municipality') &&
+        match('province', 'province') &&
+        match('region', 'region') &&
+        match('developer', 'developer') &&
+        praMatch
+      );
+    });
+  }, [allSites, filters]);
 
   const handleFilterChange = useCallback((field, value) => {
     setFilters(prev => ({ ...prev, [field]: value }));
