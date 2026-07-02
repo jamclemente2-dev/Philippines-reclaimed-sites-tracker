@@ -60,6 +60,20 @@ const regularMarkerIcon = L.divIcon({
   popupAnchor: [0, -34],
 });
 
+// Red flag icon for sites with mismatches vs the Regular Reclamation Projects list
+const flaggedMarkerIcon = L.divIcon({
+  html: `
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 32" width="24" height="32">
+      <path fill="#dc2626" stroke="white" stroke-width="1.5"
+        d="M12 1C6.477 1 2 5.477 2 11c0 7.5 10 20 10 20S22 18.5 22 11C22 5.477 17.523 1 12 1z"/>
+      <path d="M9 6.5v9M9 6.5l6 2-6 2" fill="none" stroke="white" stroke-width="1.6" stroke-linejoin="round" stroke-linecap="round"/>
+    </svg>`,
+  className: '',
+  iconSize:    [24, 32],
+  iconAnchor:  [12, 32],
+  popupAnchor: [0, -34],
+});
+
 // Calculate centroid from a [lat, lon] positions array
 function calcCentroid(positions) {
   const n = positions.length;
@@ -209,6 +223,7 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
   const [restoreFeatures, setRestoreFeatures] = useState([]);
   const [regularFeatures, setRegularFeatures] = useState([]);
   const [applicationFeatures, setApplicationFeatures] = useState([]);
+  const [flaggedFeatures, setFlaggedFeatures] = useState([]);
   const [basemap, setBasemap] = useState('street'); // 'street' or 'satellite'
 
   // Get layer visibility from sidebar
@@ -218,6 +233,7 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
   const showRestore = layers?.find(l => l.id === 'restore')?.visible ?? true;
   const showRegular       = layers?.find(l => l.id === 'regular')?.visible ?? true;
   const showApplications  = layers?.find(l => l.id === 'applications')?.visible ?? true;
+  const showFlagged       = layers?.find(l => l.id === 'flagged')?.visible ?? true;
 
   // Load Restoration Projects GeoJSON
   useEffect(() => {
@@ -286,6 +302,31 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
         console.log(`✅ Loaded ${parsed.length} application polygons`);
       })
       .catch(err => console.log('⚠️ Applications not loaded:', err.message));
+  }, []);
+
+  // Load Flagged Areas GeoJSON
+  useEffect(() => {
+    const path = `${import.meta.env.BASE_URL}FlaggedAreas.geojson`;
+    fetch(path)
+      .then(r => r.ok ? r.json() : null)
+      .then(geojson => {
+        if (!geojson?.features) return;
+        const parsed = geojson.features
+          .filter(f => f.geometry?.type === 'Point')
+          .map(f => ({
+            position: [f.geometry.coordinates[1], f.geometry.coordinates[0]],
+            site_name: f.properties.site_name,
+            regular_project: f.properties.regular_project,
+            regular_lot: f.properties.regular_lot,
+            site_area_ha: f.properties.site_area_ha,
+            regular_area_ha: f.properties.regular_area_ha,
+            area_diff_pct: f.properties.area_diff_pct,
+            reason: f.properties.reason,
+          }));
+        setFlaggedFeatures(parsed);
+        console.log(`✅ Loaded ${parsed.length} flagged areas`);
+      })
+      .catch(err => console.log('⚠️ FlaggedAreas not loaded:', err.message));
   }, []);
 
   // Load ports GeoJSON
@@ -559,6 +600,52 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
               </Fragment>
             );
           })}
+        </FeatureGroup>
+      )}
+
+      {/* Flagged Areas Layer - sites with mismatches vs Regular Reclamation Projects list */}
+      {showFlagged && flaggedFeatures.length > 0 && (
+        <FeatureGroup>
+          {flaggedFeatures.map((f, i) => (
+            <Marker key={`flagged-${i}`} position={f.position} icon={flaggedMarkerIcon}>
+              <Popup maxWidth={300} minWidth={240}>
+                <div className="popup-content">
+                  <div style={{ fontSize: '11px', color: '#dc2626', fontWeight: 700, textTransform: 'uppercase', marginBottom: 4 }}>
+                    Flagged — Data Mismatch
+                  </div>
+                  <h3 style={{ marginBottom: 6 }}>{f.site_name}</h3>
+                  <div className="info-row">
+                    <span className="label">Regular Project:</span>
+                    <span className="value">{f.regular_project}</span>
+                  </div>
+                  {f.regular_lot && (
+                    <div className="info-row">
+                      <span className="label">Lot:</span>
+                      <span className="value">{f.regular_lot}</span>
+                    </div>
+                  )}
+                  <div className="info-row">
+                    <span className="label">Site Area:</span>
+                    <span className="value">{f.site_area_ha} ha</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="label">Regular Project Area:</span>
+                    <span className="value">{f.regular_area_ha} ha</span>
+                  </div>
+                  <div className="info-row">
+                    <span className="label">Difference:</span>
+                    <span className="value">{f.area_diff_pct}%</span>
+                  </div>
+                  {f.reason && (
+                    <div className="info-row">
+                      <span className="label">Notes:</span>
+                      <span className="value">{f.reason}</span>
+                    </div>
+                  )}
+                </div>
+              </Popup>
+            </Marker>
+          ))}
         </FeatureGroup>
       )}
 

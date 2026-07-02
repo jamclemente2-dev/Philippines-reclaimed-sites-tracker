@@ -20,6 +20,7 @@ const INITIAL_LAYERS = [
   { id: 'restore', name: 'Restoration Projects', visible: true },
   { id: 'regular', name: 'Regular Reclamation Projects', visible: true },
   { id: 'applications', name: 'Applications', visible: true },
+  { id: 'flagged', name: 'Flagged Areas', visible: true },
   { id: 'ports', name: 'Ports (OpenStreetMap)', visible: false }
 ];
 
