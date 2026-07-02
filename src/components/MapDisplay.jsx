@@ -316,12 +316,7 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
           .map(f => ({
             position: [f.geometry.coordinates[1], f.geometry.coordinates[0]],
             site_name: f.properties.site_name,
-            regular_project: f.properties.regular_project,
-            regular_lot: f.properties.regular_lot,
-            site_area_ha: f.properties.site_area_ha,
-            regular_area_ha: f.properties.regular_area_ha,
-            area_diff_pct: f.properties.area_diff_pct,
-            reason: f.properties.reason,
+            issues: f.properties.issues || [],
           }));
         setFlaggedFeatures(parsed);
         console.log(`✅ Loaded ${parsed.length} flagged areas`);
@@ -614,34 +609,31 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
                     Flagged — Data Mismatch
                   </div>
                   <h3 style={{ marginBottom: 6 }}>{f.site_name}</h3>
-                  <div className="info-row">
-                    <span className="label">Regular Project:</span>
-                    <span className="value">{f.regular_project}</span>
-                  </div>
-                  {f.regular_lot && (
-                    <div className="info-row">
-                      <span className="label">Lot:</span>
-                      <span className="value">{f.regular_lot}</span>
+                  {f.issues.map((issue, ii) => (
+                    <div key={ii} style={{ marginBottom: ii < f.issues.length - 1 ? 10 : 0 }}>
+                      <div style={{ fontSize: '11px', color: '#9ca3af', fontWeight: 700, textTransform: 'uppercase', margin: '6px 0 2px' }}>
+                        {issue.type}
+                      </div>
+                      {issue.detail && (
+                        <div className="info-row">
+                          <span className="label">Ref:</span>
+                          <span className="value">{issue.detail}</span>
+                        </div>
+                      )}
+                      <div className="info-row">
+                        <span className="label">{issue.metric_a_label}:</span>
+                        <span className="value">{issue.metric_a} ha</span>
+                      </div>
+                      <div className="info-row">
+                        <span className="label">{issue.metric_b_label}:</span>
+                        <span className="value">{issue.metric_b} ha</span>
+                      </div>
+                      <div className="info-row">
+                        <span className="label">Difference:</span>
+                        <span className="value">{issue.diff_pct}%</span>
+                      </div>
                     </div>
-                  )}
-                  <div className="info-row">
-                    <span className="label">Site Area:</span>
-                    <span className="value">{f.site_area_ha} ha</span>
-                  </div>
-                  <div className="info-row">
-                    <span className="label">Regular Project Area:</span>
-                    <span className="value">{f.regular_area_ha} ha</span>
-                  </div>
-                  <div className="info-row">
-                    <span className="label">Difference:</span>
-                    <span className="value">{f.area_diff_pct}%</span>
-                  </div>
-                  {f.reason && (
-                    <div className="info-row">
-                      <span className="label">Notes:</span>
-                      <span className="value">{f.reason}</span>
-                    </div>
-                  )}
+                  ))}
                 </div>
               </Popup>
             </Marker>
