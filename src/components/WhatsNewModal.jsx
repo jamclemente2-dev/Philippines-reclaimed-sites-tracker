@@ -3,7 +3,7 @@ import { X } from 'lucide-react';
 const FEATURES = [
   {
     title: 'Flagged Areas',
-    description: 'Highlights sites whose surveyed boundary and area differ significantly from the official Regular Reclamation Projects listing.',
+    description: 'Highlights sites where the area of the GIS-delineated boundary differs significantly from the area recorded in the PRA database.',
   },
   {
     title: 'Download Report as PDF',
