@@ -4,6 +4,7 @@ import MapDisplay from './components/MapDisplay';
 import Lightbox from './components/Lightbox';
 import SiteDetail from './components/SiteDetail';
 import Login from './components/Login';
+import WhatsNewModal from './components/WhatsNewModal';
 
 const INITIAL_FILTERS = {
   name: '',
@@ -15,11 +16,11 @@ const INITIAL_FILTERS = {
 };
 
 const INITIAL_LAYERS = [
-  { id: 'markers', name: 'Site Markers (Reclamations)', visible: true },
-  { id: 'polygons', name: 'Reclamation Polygons', visible: true },
-  { id: 'restore', name: 'Restoration Projects', visible: true },
-  { id: 'regular', name: 'Regular Reclamation Projects', visible: true },
-  { id: 'applications', name: 'Applications', visible: true },
+  { id: 'markers', name: 'Site Markers (Reclamations)', visible: false },
+  { id: 'polygons', name: 'Reclamation Polygons', visible: false },
+  { id: 'restore', name: 'Restoration Projects', visible: false },
+  { id: 'regular', name: 'Regular Reclamation Projects', visible: false },
+  { id: 'applications', name: 'Applications', visible: false },
   { id: 'flagged', name: 'Flagged Areas', visible: true },
   { id: 'ports', name: 'Ports (OpenStreetMap)', visible: false }
 ];
@@ -95,6 +96,12 @@ function App() {
   const [lightbox, setLightbox] = useState({ open: false, photos: [], index: 0 });
   const [loading, setLoading] = useState(true);
   const [currentHash, setCurrentHash] = useState(window.location.hash);
+  const [showWhatsNew, setShowWhatsNew] = useState(() => sessionStorage.getItem('pra_whatsnew_seen') !== '1');
+
+  const dismissWhatsNew = useCallback(() => {
+    sessionStorage.setItem('pra_whatsnew_seen', '1');
+    setShowWhatsNew(false);
+  }, []);
 
   // Listen for hash changes (back/forward navigation)
   useEffect(() => {
@@ -245,6 +252,7 @@ function App() {
           onClose={closeLightbox}
         />
       )}
+      {showWhatsNew && <WhatsNewModal onClose={dismissWhatsNew} />}
     </div>
   );
 }

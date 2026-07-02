@@ -1136,6 +1136,83 @@ body {
   background: #1d4ed8;
 }
 
+/* ── What's New modal ──────────────────────────────────────────── */
+
+.whatsnew-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.whatsnew-card {
+  position: relative;
+  background: white;
+  border-radius: 14px;
+  padding: 32px 28px 24px;
+  width: 380px;
+  max-width: calc(100vw - 32px);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+
+.whatsnew-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #6b7280;
+  padding: 4px;
+  line-height: 0;
+}
+
+.whatsnew-close:hover {
+  color: #1f2937;
+}
+
+.whatsnew-title {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 16px;
+}
+
+.whatsnew-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+  font-size: 14px;
+  color: #374151;
+  line-height: 1.5;
+}
+
+.whatsnew-list strong {
+  color: #111827;
+}
+
+.whatsnew-btn {
+  width: 100%;
+  padding: 10px;
+  background: #1e40af;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.whatsnew-btn:hover {
+  background: #1d4ed8;
+}
+
 /* ── Print / PDF export ────────────────────────────────────────── */
 
 /* Screen: portal photos are hidden; photos section visible normally */
