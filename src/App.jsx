@@ -96,10 +96,9 @@ function App() {
   const [lightbox, setLightbox] = useState({ open: false, photos: [], index: 0 });
   const [loading, setLoading] = useState(true);
   const [currentHash, setCurrentHash] = useState(window.location.hash);
-  const [showWhatsNew, setShowWhatsNew] = useState(() => sessionStorage.getItem('pra_whatsnew_seen') !== '1');
+  const [showWhatsNew, setShowWhatsNew] = useState(true);
 
   const dismissWhatsNew = useCallback(() => {
-    sessionStorage.setItem('pra_whatsnew_seen', '1');
     setShowWhatsNew(false);
   }, []);
 
