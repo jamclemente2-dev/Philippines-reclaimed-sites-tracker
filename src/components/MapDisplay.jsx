@@ -4,17 +4,6 @@ import L from 'leaflet';
 
 // ── Marker icon helpers ───────────────────────────────────────────────────────
 
-const STATUS_COLORS = {
-  completed: '#1e40af',
-  complete:  '#1e40af',
-  ongoing:   '#d97706',
-};
-
-function getStatusColor(status) {
-  const key = (status || '').toLowerCase().replace(/[-\s]/g, '');
-  return STATUS_COLORS[key] || '#6b7280';
-}
-
 // Gray marker icon for site markers (created once, status no longer affects color)
 const siteMarkerIcon = L.divIcon({
   html: `
@@ -344,13 +333,11 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
       if (site.geometry && (site.geometry.type === 'Polygon' || site.geometry.type === 'MultiPolygon')) {
         const coords = convertPolygonCoordinates(site.geometry);
         if (coords) {
-          const color = getStatusColor(site.status);
           coords.forEach((ring, ri) => {
             result.push({
               key: `polygon-${index}-${ri}`,
               positions: ring,
               site,
-              color,
             });
           });
         }
@@ -402,11 +389,11 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
       {/* Reclamation Polygons - controlled by sidebar */}
       {showPolygons && (
         <FeatureGroup>
-          {polygonsToRender.map(({ key, positions, site, color }) => (
+          {polygonsToRender.map(({ key, positions, site }) => (
             <Polygon
               key={key}
               positions={positions}
-              pathOptions={{ color, fillColor: color, fillOpacity: 0.25, weight: 2 }}
+              pathOptions={{ color: '#6b7280', fillColor: '#6b7280', fillOpacity: 0.25, weight: 2 }}
             >
               <Popup maxWidth={300} minWidth={240}>
                 <SitePopup site={site} onPhotoClick={onPhotoClick} />
