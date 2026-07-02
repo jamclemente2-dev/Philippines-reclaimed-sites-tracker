@@ -98,21 +98,6 @@ function SearchSidebar({
         </div>
       </div>
 
-      <div className="legend">
-        <div className="legend-title">Status Legend</div>
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: '#1e40af' }} />
-          Completed
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: '#d97706' }} />
-          On-Going
-        </div>
-        <div className="legend-item">
-          <div className="legend-dot" style={{ background: '#6b7280' }} />
-          Other / Unknown
-        </div>
-      </div>
     </aside>
   );
 }
