@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useMemo } from 'react';
 import SearchSidebar from './components/SearchSidebar';
 import MapDisplay from './components/MapDisplay';
 import Lightbox from './components/Lightbox';
@@ -128,7 +128,7 @@ function App() {
       });
   }, []);
 
-  const filteredSites = allSites.filter(site => {
+  const filteredSites = useMemo(() => allSites.filter(site => {
     const match = (field, key) =>
       !filters[key] ||
       (site[field] || '').toLowerCase().includes(filters[key].toLowerCase());
@@ -153,7 +153,7 @@ function App() {
       match('developer', 'developer') &&
       praMatch
     );
-  });
+  }), [allSites, filters]);
 
   const handleFilterChange = useCallback((field, value) => {
     setFilters(prev => ({ ...prev, [field]: value }));
