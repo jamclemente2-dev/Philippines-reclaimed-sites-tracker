@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useMemo, Fragment } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Polygon, FeatureGroup, CircleMarker, Tooltip, useMap } from 'react-leaflet';
+import { Plus, Check } from 'lucide-react';
 import L from 'leaflet';
 
 // ── Marker icon helpers ───────────────────────────────────────────────────────
@@ -95,7 +96,7 @@ function InfoRow({ label, value }) {
   );
 }
 
-function SitePopup({ site, onPhotoClick }) {
+function SitePopup({ site, onPhotoClick, isSelected, onToggleSelect }) {
   const photos = site.photos || [];
   const detailUrl = `${import.meta.env.BASE_URL}#/site/${site._index}`;
 
@@ -116,14 +117,26 @@ function SitePopup({ site, onPhotoClick }) {
       <InfoRow label="Region"            value={site.region} />
       <InfoRow label="Notes"             value={site.notes} />
 
-      <a
-        href={detailUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="popup-detail-link"
-      >
-        View Full Details &rarr;
-      </a>
+      <div className="popup-actions">
+        <a
+          href={detailUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="popup-detail-link"
+        >
+          View Full Details &rarr;
+        </a>
+
+        {onToggleSelect && (
+          <button
+            className={`popup-bulk-btn${isSelected ? ' popup-bulk-btn-active' : ''}`}
+            onClick={() => onToggleSelect(site._index)}
+          >
+            {isSelected ? <Check size={13} /> : <Plus size={13} />}
+            {isSelected ? 'Added to Bulk Report' : 'Add to Bulk Report'}
+          </button>
+        )}
+      </div>
 
       {photos.length > 0 && (
         <div className="photo-gallery">
@@ -218,7 +231,7 @@ function FitBoundsController({ sites, hasActiveFilters }) {
 
 // ── Map component ─────────────────────────────────────────────────────────────
 
-function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
+function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters, selectedIds, onToggleSelect }) {
   const [ports, setPorts] = useState([]);
   const [restoreFeatures, setRestoreFeatures] = useState([]);
   const [regularFeatures, setRegularFeatures] = useState([]);
@@ -432,7 +445,7 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
               pathOptions={{ color: '#6b7280', fillColor: '#6b7280', fillOpacity: 0.25, weight: 2 }}
             >
               <Popup maxWidth={300} minWidth={240}>
-                <SitePopup site={site} onPhotoClick={onPhotoClick} />
+                <SitePopup site={site} onPhotoClick={onPhotoClick} isSelected={selectedIds?.has(site._index)} onToggleSelect={onToggleSelect} />
               </Popup>
             </Polygon>
           ))}
@@ -686,7 +699,7 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters }) {
             icon={siteMarkerIcon}
           >
             <Popup maxWidth={300} minWidth={240}>
-              <SitePopup site={site} onPhotoClick={onPhotoClick} />
+              <SitePopup site={site} onPhotoClick={onPhotoClick} isSelected={selectedIds?.has(site._index)} onToggleSelect={onToggleSelect} />
             </Popup>
           </Marker>
         );

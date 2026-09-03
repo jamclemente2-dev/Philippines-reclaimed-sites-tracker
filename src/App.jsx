@@ -199,13 +199,14 @@ function App() {
     });
   }, []);
 
-  const selectAllVisible = useCallback((indices) => {
-    setSelectedIds(prev => new Set([...prev, ...indices]));
-  }, []);
-
   const clearSelection = useCallback(() => {
     setSelectedIds(new Set());
   }, []);
+
+  const handleDownloadBulkReport = useCallback(() => {
+    const ids = Array.from(selectedIds).join(',');
+    window.open(`${import.meta.env.BASE_URL}#/report/${ids}`, '_blank');
+  }, [selectedIds]);
 
   const openLightbox = useCallback((photos, index) => {
     setLightbox({ open: true, photos, index });
@@ -265,11 +266,6 @@ function App() {
         visibleSites={filteredSites.length}
         layers={layers}
         onLayerToggle={handleLayerToggle}
-        filteredSites={filteredSites}
-        selectedIds={selectedIds}
-        onToggleSelect={toggleSiteSelection}
-        onSelectAllVisible={selectAllVisible}
-        onClearSelection={clearSelection}
       />
       <div className="map-wrapper">
         <MapDisplay
@@ -277,6 +273,8 @@ function App() {
           onPhotoClick={openLightbox}
           layers={layers}
           hasActiveFilters={Object.values(filters).some(v => v !== '')}
+          selectedIds={selectedIds}
+          onToggleSelect={toggleSiteSelection}
         />
       </div>
       {lightbox.open && (
@@ -287,6 +285,17 @@ function App() {
         />
       )}
       {showWhatsNew && <WhatsNewModal onClose={dismissWhatsNew} />}
+      {selectedIds.size > 0 && (
+        <div className="bulk-report-bar">
+          <span className="bulk-report-bar-count">{selectedIds.size} site{selectedIds.size === 1 ? '' : 's'} added to bulk report</span>
+          <button className="bulk-report-bar-download" onClick={handleDownloadBulkReport}>
+            Download Bulk Report
+          </button>
+          <button className="bulk-report-bar-clear" onClick={clearSelection}>
+            Clear
+          </button>
+        </div>
+      )}
     </div>
   );
 }

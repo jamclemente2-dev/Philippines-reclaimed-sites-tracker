@@ -1,4 +1,4 @@
-import { SlidersHorizontal, X, Map, ListChecks, FileDown } from 'lucide-react';
+import { SlidersHorizontal, X, Map } from 'lucide-react';
 
 const FILTER_FIELDS = [
   { key: 'name',         label: 'Name',         placeholder: 'Search by name…' },
@@ -22,18 +22,8 @@ function SearchSidebar({
   visibleSites,
   layers,
   onLayerToggle,
-  filteredSites,
-  selectedIds,
-  onToggleSelect,
-  onSelectAllVisible,
-  onClearSelection,
 }) {
   const hasActiveFilters = Object.values(filters).some(v => v !== '');
-
-  const handleDownloadBulkReport = () => {
-    const ids = Array.from(selectedIds).join(',');
-    window.open(`${import.meta.env.BASE_URL}#/report/${ids}`, '_blank');
-  };
 
   return (
     <aside className="sidebar">
@@ -85,55 +75,6 @@ function SearchSidebar({
             Clear Filters
           </button>
         )}
-      </div>
-
-      {/* Bulk Report Section */}
-      <div className="sidebar-section">
-        <div className="section-title">
-          <ListChecks size={14} />
-          <span>Select Sites for Report</span>
-        </div>
-
-        <div className="site-select-actions">
-          <button
-            className="site-select-action-btn"
-            onClick={() => onSelectAllVisible(filteredSites.map(s => s._index))}
-            disabled={filteredSites.length === 0}
-          >
-            Select all visible ({filteredSites.length})
-          </button>
-          {selectedIds.size > 0 && (
-            <button className="site-select-action-btn" onClick={onClearSelection}>
-              Clear ({selectedIds.size})
-            </button>
-          )}
-        </div>
-
-        <div className="site-select-list">
-          {filteredSites.length === 0 ? (
-            <p className="site-select-empty">No sites match the current filters.</p>
-          ) : (
-            filteredSites.map(site => (
-              <label key={site._index} className="site-select-row">
-                <input
-                  type="checkbox"
-                  checked={selectedIds.has(site._index)}
-                  onChange={() => onToggleSelect(site._index)}
-                />
-                <span className="site-select-name">{site.name}</span>
-              </label>
-            ))
-          )}
-        </div>
-
-        <button
-          className="bulk-report-btn"
-          onClick={handleDownloadBulkReport}
-          disabled={selectedIds.size === 0}
-        >
-          <FileDown size={15} />
-          Download Bulk Report ({selectedIds.size})
-        </button>
       </div>
 
       {/* Map Layers Section */}
