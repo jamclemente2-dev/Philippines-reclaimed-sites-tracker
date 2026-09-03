@@ -9,6 +9,10 @@ const FEATURES = [
     title: 'Download Report as PDF',
     description: 'Export any site\'s detail page as a printable PDF report.',
   },
+  {
+    title: 'Bulk Report',
+    description: 'Add multiple sites to a bulk report from their map popups and download them all as one PDF.',
+  },
 ];
 
 function WhatsNewModal({ onClose }) {
