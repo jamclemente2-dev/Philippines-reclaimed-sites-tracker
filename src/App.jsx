@@ -3,6 +3,7 @@ import SearchSidebar from './components/SearchSidebar';
 import MapDisplay from './components/MapDisplay';
 import Lightbox from './components/Lightbox';
 import SiteDetail from './components/SiteDetail';
+import BulkReport from './components/BulkReport';
 import Login from './components/Login';
 import WhatsNewModal from './components/WhatsNewModal';
 
@@ -97,6 +98,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [currentHash, setCurrentHash] = useState(window.location.hash);
   const [showWhatsNew, setShowWhatsNew] = useState(true);
+  const [selectedIds, setSelectedIds] = useState(() => new Set());
 
   const dismissWhatsNew = useCallback(() => {
     setShowWhatsNew(false);
@@ -183,9 +185,26 @@ function App() {
   }, []);
 
   const handleLayerToggle = useCallback((layerId) => {
-    setLayers(prev => prev.map(layer => 
+    setLayers(prev => prev.map(layer =>
       layer.id === layerId ? { ...layer, visible: !layer.visible } : layer
     ));
+  }, []);
+
+  const toggleSiteSelection = useCallback((index) => {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(index)) next.delete(index);
+      else next.add(index);
+      return next;
+    });
+  }, []);
+
+  const selectAllVisible = useCallback((indices) => {
+    setSelectedIds(prev => new Set([...prev, ...indices]));
+  }, []);
+
+  const clearSelection = useCallback(() => {
+    setSelectedIds(new Set());
   }, []);
 
   const openLightbox = useCallback((photos, index) => {
@@ -200,6 +219,12 @@ function App() {
   const siteDetailMatch = currentHash.match(/^#\/site\/(\d+)$/);
   const siteDetailIndex = siteDetailMatch ? parseInt(siteDetailMatch[1], 10) : null;
   const siteForDetail = siteDetailIndex !== null ? allSites[siteDetailIndex] : null;
+
+  // Hash-based routing: #/report/1,5,9 → show bulk report page
+  const bulkReportMatch = currentHash.match(/^#\/report\/([\d,]+)$/);
+  const bulkReportSites = bulkReportMatch
+    ? bulkReportMatch[1].split(',').map(s => allSites[parseInt(s, 10)]).filter(Boolean)
+    : null;
 
   if (!authed) {
     return <Login onSuccess={() => setAuthed(true)} />;
@@ -225,6 +250,11 @@ function App() {
     return <SiteDetail site={siteForDetail} />;
   }
 
+  // Render bulk report page if hash matches
+  if (bulkReportSites) {
+    return <BulkReport sites={bulkReportSites} />;
+  }
+
   return (
     <div className="app-container">
       <SearchSidebar
@@ -235,6 +265,11 @@ function App() {
         visibleSites={filteredSites.length}
         layers={layers}
         onLayerToggle={handleLayerToggle}
+        filteredSites={filteredSites}
+        selectedIds={selectedIds}
+        onToggleSelect={toggleSiteSelection}
+        onSelectAllVisible={selectAllVisible}
+        onClearSelection={clearSelection}
       />
       <div className="map-wrapper">
         <MapDisplay

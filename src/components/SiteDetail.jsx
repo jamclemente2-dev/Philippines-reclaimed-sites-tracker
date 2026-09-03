@@ -2,21 +2,12 @@ import { useState } from 'react';
 import { createPortal } from 'react-dom';
 import { ArrowLeft, Printer } from 'lucide-react';
 import Lightbox from './Lightbox';
+import DetailRow from './DetailRow';
 
 function extractGoogleDriveId(url) {
   if (!url || url === 'null' || url.trim() === '') return null;
   const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
   return match ? match[1] : null;
-}
-
-function DetailRow({ label, value }) {
-  if (!value) return null;
-  return (
-    <div className="detail-row">
-      <span className="detail-label">{label}</span>
-      <span className="detail-value">{value}</span>
-    </div>
-  );
 }
 
 
