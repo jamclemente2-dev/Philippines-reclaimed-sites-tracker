@@ -75,12 +75,6 @@ function processFeature(feature, index) {
     area: props.Area || props.area || props.Has || '',
     area_pra: props.Area_PRA || '',
     pra_status: props.pra_status || props.pra_status_2 || '',
-    registration_date: props.registration_date || '',
-    last_payment_date: props.last_payment_date || '',
-    document: props.document || '',
-    payment_start_year: props.payment_start_year || null,
-    payment_end_year: props.payment_end_year || null,
-    payments_paid: props.payments_paid || '',
     photos: photos,
     // Keep old field names for backwards compatibility
     'year started': props.year_start || '',
