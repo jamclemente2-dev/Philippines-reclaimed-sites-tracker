@@ -277,9 +277,12 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters, selectedIds
       .then(geojson => {
         if (!geojson?.features) return;
         const parsed = geojson.features
-          .filter(f => f.geometry?.type === 'Polygon')
+          .filter(f => f.geometry?.type === 'Polygon' || f.geometry?.type === 'MultiPolygon')
           .map(f => ({
-            positions: f.geometry.coordinates[0].map(([lon, lat]) => [lat, lon]),
+            // MultiPolygon → one [outer ring] per part, which Leaflet draws as a multi-polygon
+            positions: f.geometry.type === 'MultiPolygon'
+              ? f.geometry.coordinates.map(poly => [poly[0].map(([lon, lat]) => [lat, lon])])
+              : f.geometry.coordinates[0].map(([lon, lat]) => [lat, lon]),
             project: f.properties.project,
             name: f.properties.name,
             location: f.properties.location,
@@ -505,7 +508,7 @@ function MapDisplay({ sites, onPhotoClick, layers, hasActiveFilters, selectedIds
       {showRegular && regularFeatures.length > 0 && (
         <FeatureGroup>
           {regularFeatures.map((f, i) => {
-            const centroid = calcCentroid(f.positions);
+            const centroid = calcCentroid(Array.isArray(f.positions[0][0]) ? f.positions.flat(2) : f.positions);
             const popup = (
               <Popup maxWidth={280} minWidth={200}>
                 <div className="popup-content">
